@@ -27,4 +27,16 @@ const addOrder = async (orderId, address, OwnerId, status,amount) => {
   }
 };
 
-module.exports = addOrder;
+const changePaymentStatus = async (address) => {
+  try{
+    const result = Payment.findOne({address});
+    if (result) {
+      const updatedResult = await Payment.updateOne({address},{status: true})
+      return true;
+    }
+  }
+  catch(error){
+    return null
+  }
+}
+module.exports = {addOrder, changePaymentStatus};

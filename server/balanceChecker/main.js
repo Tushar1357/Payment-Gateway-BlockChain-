@@ -2,7 +2,8 @@ const w3 = require('../connection');
 const { usdtAddress, tokenAbi } = require('../config');
 const ethers = require('ethers');
 const { getPendingTransactions, removeTransaction } = require("./pendingTxns");
-const {broadCastMessage} = require('../socket/main')
+const {broadCastMessage} = require('../socket/main');
+const { changePaymentStatus } = require('../controllers/insertOrder');
 
 const checkBalance = async () => {
   try{
@@ -16,6 +17,7 @@ const checkBalance = async () => {
       const formatBalance = parseFloat(ethers.formatUnits(balance, 18));
 
       if (formatBalance >= amount) {
+        await changePaymentStatus(address)
         broadCastMessage(address)
         console.log(`Success: Payment received for ${address}`);
         removeTransaction(address);

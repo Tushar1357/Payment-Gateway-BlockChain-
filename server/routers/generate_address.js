@@ -1,10 +1,12 @@
 const express = require("express");
 const { v4 } = require("uuid");
 const w3 = require("../connection");
-const addOrder = require("../controllers/insertOrder");
+const {addOrder} = require("../controllers/insertOrder");
 const { checkOwnerWithId, getAmount } = require("../controllers/addOwner");
-const { addPendingTxn,getPendingTransactions} = require("../balanceChecker/pendingTxns");
-
+const {
+  addPendingTxn,
+  getPendingTransactions,
+} = require("../balanceChecker/pendingTxns");
 
 const router = express.Router();
 
@@ -34,7 +36,6 @@ const validateOwner = async (req, res, next) => {
   }
 };
 
-
 router.post("/", validateOwner, async (req, res) => {
   const address = generateWallet();
   const orderId = v4();
@@ -50,7 +51,7 @@ router.post("/", validateOwner, async (req, res) => {
         amount,
       });
       addPendingTxn(address, amount);
-      console.log(getPendingTransactions())
+      console.log(getPendingTransactions());
     } else {
       res.status(500).json({
         status: false,
