@@ -45,10 +45,10 @@ router.post("/", validateOwner, async (req, res) => {
     const savedOrder = await addOrder(orderId, address, OwnerId, false);
     if (savedOrder) {
       res.json({
-        address,
         orderId,
-        status: true,
+        address,
         amount,
+        status: true,
       });
       addPendingTxn(address, amount);
       console.log(getPendingTransactions());
