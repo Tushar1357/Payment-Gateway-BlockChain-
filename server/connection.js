@@ -1,5 +1,12 @@
-const {Web3} = require("web3")
+const { Web3 } = require("web3");
 
-const w3 = new Web3('https://rpc.ankr.com/bsc')
+const web3 = () => {
+  try {
+    const w3 = new Web3("https://rpc.ankr.com/bsc");
+    return w3;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-module.exports = w3;
+module.exports = web3;

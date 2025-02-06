@@ -27,6 +27,7 @@ const validateOwner = async (req, res, next) => {
   }
 };
 
+
 router.post("/", validateOwner, async (req, res) => {
   try {
     const { OwnerName, address, amount } = req.body;

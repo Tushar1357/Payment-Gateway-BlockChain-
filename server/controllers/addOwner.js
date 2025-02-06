@@ -14,7 +14,7 @@ const checkOwner = async (UserName) => {
   try{
     const result = await model.findOne({UserName})
     if (result){
-      return true;
+      return result;
     }
     return false
   }
@@ -42,7 +42,7 @@ const checkOwnerWithId = async (OwnerId) => {
   try{
     const result = await model.findOne({OwnerId})
     if (result){
-      return true;
+      return result;
     }
     return false
   }

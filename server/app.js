@@ -1,6 +1,7 @@
 const express = require("express");
 const addressRouter = require('./routers/generate_address')
 const OwnerRouter = require('./routers/addOwner')
+const getOwnerRouter = require('./routers/owner')
 const bodyParser = require('body-parser')
 const checkBalance = require('./balanceChecker/main')
 const http = require('http')
@@ -25,6 +26,7 @@ app.use(cors({
 app.use(bodyParser.json())
 app.use("/generate-address",addressRouter)
 app.use("/add-owner",OwnerRouter)
+app.use('/get-owner',getOwnerRouter)
 
 
 server.listen(PORT, () => {

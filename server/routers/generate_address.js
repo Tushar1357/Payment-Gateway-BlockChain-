@@ -1,6 +1,6 @@
 const express = require("express");
 const { v4 } = require("uuid");
-const w3 = require("../connection");
+const web3 = require("../connection");
 const {addOrder} = require("../controllers/insertOrder");
 const { checkOwnerWithId, getAmount } = require("../controllers/addOwner");
 const {
@@ -8,6 +8,7 @@ const {
   getPendingTransactions,
 } = require("../balanceChecker/pendingTxns");
 
+const w3 = web3()
 const router = express.Router();
 
 const generateWallet = () => {
@@ -26,6 +27,7 @@ const validateOwner = async (req, res, next) => {
 
     const exists = await checkOwnerWithId(OwnerId);
     if (exists) {
+      req.body['UserName'] = exists.UserName
       return next();
     }
 
@@ -39,13 +41,14 @@ const validateOwner = async (req, res, next) => {
 router.post("/", validateOwner, async (req, res) => {
   const address = generateWallet();
   const orderId = v4();
-  const { OwnerId } = req.body;
+  const { OwnerId, UserName } = req.body;
   const amount = await getAmount(OwnerId);
   try {
     const savedOrder = await addOrder(orderId, address, OwnerId, false);
     if (savedOrder) {
       res.json({
         orderId,
+        Merchant: UserName,
         address,
         amount,
         status: true,

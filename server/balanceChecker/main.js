@@ -1,9 +1,11 @@
-const w3 = require('../connection');
+const web3 = require('../connection');
 const { usdtAddress, tokenAbi } = require('../config');
 const ethers = require('ethers');
 const { getPendingTransactions, removeTransaction } = require("./pendingTxns");
 const {broadCastMessage} = require('../socket/main');
 const { changePaymentStatus } = require('../controllers/insertOrder');
+
+const w3 = web3();
 
 const checkBalance = async () => {
   try{
