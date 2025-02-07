@@ -9,6 +9,7 @@ export default function ClientComponent({ params }) {
   const { OwnerId } = params;
   const [Info, setInfo] = useState(null);
   const [paymentStatus, setStatus] = useState(false);
+  const [errMess, setMess] = useState("")
   const [time, settime] = useState(1800);
   const [timer, settimer] = useState(false);
   useEffect(() => {
@@ -26,11 +27,15 @@ export default function ClientComponent({ params }) {
       if (data.status) {
         setInfo(data);
         settimer(true);
+        socketio.emit("register_order", {
+          address: data.address,
+        });
       }
+      else{
+        setMess(data.message)
+      }
+      
 
-      socketio.emit("register_order", {
-        address: data.address,
-      });
     };
 
     if (OwnerId) {
@@ -63,7 +68,7 @@ export default function ClientComponent({ params }) {
 
   return (
     <div
-      className="container d-flex justify-content-center flex-column align-items-center"
+      className="container d-flex justify-content-start flex-column align-items-center mt-5"
       style={{ height: "100vh" }}
     >
       <h1 className="text-center mb-3">Pay to your Merchant with crypto</h1>
@@ -90,8 +95,10 @@ export default function ClientComponent({ params }) {
           </div>
         </div>
       ) : (
-        <Spinner />
+        !errMess && <Spinner />
       )}
+
+      {errMess ? <p className="fs-3 fw-bold text-decoration-underline">{errMess}</p>: null}
 
       {Info && (
         <h3>

@@ -9,17 +9,23 @@ mongoose
 const paymentSchema = new mongoose.Schema({
   orderId: { type: String, required: true, unique: true },
   address: { type: String, required: true },
-  OwnerId: { type: String, required: true },
+  MerchantId: { type: String, required: true },
   status: { type: Boolean, required: true },
-  amount: {type: Number, requierd: true},
+  amount: { type: Number, requierd: true },
   Date: { type: Date, default: Date.now },
 });
 
 const Payment = mongoose.model("Payment", paymentSchema);
 
-const addOrder = async (orderId, address, OwnerId, status,amount) => {
+const addOrder = async (orderId, address, MerchantId, status, amount) => {
   try {
-    const newOrder = new Payment({ orderId, address, OwnerId, status,amount });
+    const newOrder = new Payment({
+      orderId,
+      address,
+      MerchantId,
+      status,
+      amount,
+    });
     await newOrder.save();
     return true;
   } catch (error) {
@@ -28,15 +34,17 @@ const addOrder = async (orderId, address, OwnerId, status,amount) => {
 };
 
 const changePaymentStatus = async (address) => {
-  try{
-    const result = Payment.findOne({address});
+  try {
+    const result = Payment.findOne({ address });
     if (result) {
-      const updatedResult = await Payment.updateOne({address},{status: true})
+      const updatedResult = await Payment.updateOne(
+        { address },
+        { status: true }
+      );
       return true;
     }
+  } catch (error) {
+    return null;
   }
-  catch(error){
-    return null
-  }
-}
-module.exports = {addOrder, changePaymentStatus};
+};
+module.exports = { addOrder, changePaymentStatus };

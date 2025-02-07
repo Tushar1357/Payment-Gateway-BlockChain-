@@ -1,14 +1,14 @@
 const express = require("express");
 const { v4 } = require("uuid");
 const web3 = require("../connection");
-const {addOrder} = require("../controllers/insertOrder");
+const { addOrder } = require("../controllers/insertOrder");
 const { checkOwnerWithId, getAmount } = require("../controllers/addOwner");
 const {
   addPendingTxn,
   getPendingTransactions,
 } = require("../balanceChecker/pendingTxns");
 
-const w3 = web3()
+const w3 = web3();
 const router = express.Router();
 
 const generateWallet = () => {
@@ -18,20 +18,20 @@ const generateWallet = () => {
 
 const validateOwner = async (req, res, next) => {
   try {
-    const { OwnerId } = req.body;
-    if (!OwnerId) {
+    const { MerchantId } = req.body;
+    if (!MerchantId) {
       return res
         .status(400)
-        .json({ message: "OwnerName is required", status: false });
+        .json({ message: "Merchant is required", status: false });
     }
 
-    const exists = await checkOwnerWithId(OwnerId);
+    const exists = await checkOwnerWithId(MerchantId);
     if (exists) {
-      req.body['UserName'] = exists.UserName
+      req.body["UserName"] = exists.UserName;
       return next();
     }
 
-    res.status(403).json({ message: "Invalid Owner", status: false });
+    res.status(403).json({ message: "Invalid Merchant", status: false });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "There was some error", status: false });
@@ -41,10 +41,10 @@ const validateOwner = async (req, res, next) => {
 router.post("/", validateOwner, async (req, res) => {
   const address = generateWallet();
   const orderId = v4();
-  const { OwnerId, UserName } = req.body;
-  const amount = await getAmount(OwnerId);
+  const { MerchantId, UserName } = req.body;
+  const amount = await getAmount(MerchantId);
   try {
-    const savedOrder = await addOrder(orderId, address, OwnerId, false);
+    const savedOrder = await addOrder(orderId, address, MerchantId, false);
     if (savedOrder) {
       res.json({
         orderId,
